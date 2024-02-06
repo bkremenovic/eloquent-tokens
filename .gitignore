@@ -1,0 +1,10 @@
+.idea
+composer.lock
+coverage
+phpunit.xml
+psalm.xml
+testbench.yaml
+vendor
+.php-cs-fixer.cache
+.phpbench
+.DS_Store

@@ -1,0 +1,54 @@
+{
+    "name": "bkremenovic/eloquent-tokens",
+    "description": "A versatile Laravel package for managing and validating Eloquent model-related tokens",
+    "keywords": [
+        "bkremenovic",
+        "laravel",
+        "eloquent-tokens",
+        "laravel-tokens",
+        "laravel-eloquent-tokens"
+    ],
+    "homepage": "https://github.com/bkremenovic/eloquent-tokens",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Boris Kremenovic",
+            "email": "boris@incollab.io",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "laravel/framework": "^7.0|^8.0|^9.0|^10.0",
+        "nesbot/carbon": "^2.67",
+        "ext-json": "*",
+        "ext-zlib": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bkremenovic\\EloquentTokens\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bkremenovic\\EloquentTokens\\EloquentTokensServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.21",
+        "nunomaduro/collision": "^7.8"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bkremenovic\\EloquentTokens\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "./vendor/bin/testbench package:test"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

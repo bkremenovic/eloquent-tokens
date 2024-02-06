@@ -19,13 +19,15 @@ After four months of dedicated development, I am announcing the launch of this p
 - [Token Management](#token-management)
     - [Creating Tokens](#creating-tokens)
     - [Querying Tokens](#querying-tokens)
+    - [Token Deletion](#token-deletion)
+    - [Force Deleting All Tokens](#force-deleting-all-tokens)
 - [Advanced Token Creation](#advanced-token-creation)
     - [Specifying Token Expiration Date](#specifying-token-expiration-date)
     - [Including Additional Data](#including-additional-data)
     - [Specifying a Driver](#specifying-a-driver)
 - [Advanced Token Querying](#advanced-token-querying)
-- [Token Deletion](#token-deletion)
-- [Force Deletion of All Tokens](#force-deletion-of-all-tokens)
+- [Understanding TokenInstance](#understanding-tokeninstance)
+    - [Available Methods](#available-methods)
 - [Testing](#testing)
 - [License](#license)
 
@@ -154,6 +156,84 @@ Similar to Eloquent’s functions, this dependency provides two functions for fi
     $tokenInstance = Token::findOrFail("eyJpdiI6Ik9FdFFqRmpxbXhh.....");
     ```
 
+### Token Deletion
+
+There are two ways to delete an Eloquent model tokens:
+
+- By calling a `deleteTokens()` function on a model instance
+    ```php
+    // This would delete/blacklist all tokens related to the $model (targeting both model class and model id)
+    $model->deleteTokens();
+    ```
+
+- By calling a `deleteBy` function on Token facade:
+    ```php
+    // This would delete/blacklist all tokens related to the $model (targeting both model class and model id)
+    Token::deleteBy($model);
+    
+    // This would delete/blacklist all tokens related to the Project model (targeting model class)
+    Token::deleteBy(null, Project::class);
+    ```
+
+The signature of `deleteBy` function within a Token facade is following:
+```php
+function deleteBy(
+    Model $model = null,
+    string $modelClass = null,
+    string $type = null,
+    string $id = null,
+    array $data = null
+): void {
+    // ...
+}
+```
+Since PHP 8.0 you may specify function arguments in any order by using their named arguments.
+
+#### Example 1
+```php
+// Delete all tokens related to Project model, where role is 'project-administrator'
+Token::deleteBy(modelClass: Project::class, ['role' => 'project-administrator']);
+```
+
+#### Example 2
+```php
+// Delete a single token by its unique ID
+Token::deleteBy(id: "9ad5a1f5-6207-4727-b1ee-e9eddbf752a1");
+```
+
+The signature of `deleteTokens` function within an Eloquent model class is following:
+```php
+function deleteTokens(
+    string $type = null,
+    string $id = null,
+    array $data = null
+): void {
+    // ...
+}
+```
+
+#### Example 1
+```php
+// Delete all tokens related to the Project model instance, while targeting a specific token type
+$project->deleteTokens(type: "ACCESS_TOKEN");
+```
+
+#### Example 2
+```php
+// Delete a single token by its unique ID, also targeting the specific Project model instance
+$project->deleteTokens(id: "9ad5a1f5-6207-4727-b1ee-e9eddbf752a1");
+```
+
+### Force Deleting All Tokens
+
+To completely remove or blacklist all tokens that have been issued, you can use the forceDeleteAll method.
+
+This action is irreversible, and <u>***should be used with caution***</u>, as it will permanently delete all tokens from your system, making them unusable for any further operations or validations.
+```php
+Token::forceDeleteAll();
+```
+Its use in production environments should be carefully considered due to its impactful nature on token validity and system security.
+
 ## Advanced Token Creation
 
 ### Specifying Token Expiration Date
@@ -227,82 +307,17 @@ $isTokenFound = (bool) Token::whereModel($project)
     ->find("eyJpdiI6Ik9FdFFqRmpxbXhh.....");
 ```
 
-## Token Deletion
+## Understanding `TokenInstance`
+The TokenInstance class is a crucial part of this token management system. It holds all relevant information for a specific token, such as its identifier, associated model, type, creation time, expiration time and additional data. 
 
-There are two ways to delete an Eloquent model tokens:
-
-- By calling a `deleteTokens()` function on a model instance
-    ```php
-    $model->deleteTokens();
-    ```
-
-- By calling a `deleteBy` function on Token facade:
-    ```php
-    // This would delete/blacklist all tokens related to the $model (targeting both model class and model id)
-    Token::deleteBy($model);
-    
-    // This would delete/blacklist all tokens related to the Project model (targeting model class)
-    Token::deleteBy(null, Project::class);
-    ```
-
-The signature of `deleteBy` function within a Token facade is following:
-```php
-function deleteBy(
-    Model $model = null,
-    string $modelClass = null,
-    string $type = null,
-    string $id = null,
-    array $data = null
-): void {
-    // ...
-}
-```
-Since PHP 8.0 you may specify function arguments in any order by using their named arguments.
-
-#### Example 1
-```php
-// Delete all tokens related to Project model, where role is 'project-administrator'
-Token::deleteBy(modelClass: Project::class, ['role' => 'project-administrator']);
-```
-
-#### Example 2
-```php
-// Delete a single token by its unique ID
-Token::deleteBy(id: "9ad5a1f5-6207-4727-b1ee-e9eddbf752a1");
-```
-
-The signature of `deleteTokens` function within an Eloquent model class is following:
-```php
-function deleteTokens(
-    string $type = null,
-    string $id = null,
-    array $data = null
-): void {
-    // ...
-}
-```
-
-#### Example 1
-```php
-// Delete all tokens related to the Project model instance, while targeting a specific token type
-$project->deleteTokens(type: "ACCESS_TOKEN");
-```
-
-#### Example 2
-```php
-// Delete a single token by its unique ID, also targeting the specific Project model instance
-$project->deleteTokens(id: "9ad5a1f5-6207-4727-b1ee-e9eddbf752a1");
-```
-
-## Force Deletion of All Tokens
-
-To completely remove or blacklist all tokens that have been issued, you can use the forceDeleteAll method.
-
-This action is irreversible, and <u>***should be used with caution***</u>, as it will permanently delete all tokens from your system, making them unusable for any further operations or validations.
-```php
-Token::forceDeleteAll();
-```
-Its use in production environments should be carefully considered due to its impactful nature on token validity and system security.
+### Available Methods
+- `getId()` Returns the token's unique identifier.
+- `getModel()` Fetches the associated Eloquent model for the token.
+- `getType()` Returns the token's type (e.g., "ACCESS_TOKEN").
+- `getCreatedAt()` Returns the creation timestamp as a Carbon instance.
+- `getExpiresAt()` Returns the expiration date and time of the token, if it is set to expire.
+- `getData()` Returns any additional data associated with the token.
+- `getToken()` Returns the actual string value of the token, used when finding a token.
 
 ## Testing
 To ensure the reliability and functionality of Laravel Eloquent Tokens, you can run tests using the Composer command:

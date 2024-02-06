@@ -24,7 +24,7 @@ trait HasEloquentTokens
      *
      * @return TokenInstance The newly created TokenInstance.
      *
-     * @throws InvalidTraitUsageException
+     * @noinspection PhpDocMissingThrowsInspection
      */
     public function createToken(string $type, string $expiresIn = null, array $data = [], string $driver = null): TokenInstance
     {
@@ -46,7 +46,7 @@ trait HasEloquentTokens
      *
      * @return void
      *
-     * @throws InvalidTraitUsageException
+     * @noinspection PhpDocMissingThrowsInspection
      */
     public function deleteTokens(string $type = null, string $id = null, array $data = null): void
     {

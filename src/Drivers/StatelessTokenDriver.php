@@ -2,6 +2,8 @@
 
 namespace Bkremenovic\EloquentTokens\Drivers;
 
+use Bkremenovic\EloquentTokens\Exceptions\ModelClassUnknownException;
+use Bkremenovic\EloquentTokens\Exceptions\TraitMissingException;
 use Bkremenovic\EloquentTokens\Interfaces\TokenDriverInterface;
 use Bkremenovic\EloquentTokens\TokenConfigManager;
 use Bkremenovic\EloquentTokens\TokenInstance;
@@ -24,6 +26,8 @@ class StatelessTokenDriver implements TokenDriverInterface
      * @param array|null $data Optional additional data associated with the token.
      *
      * @return TokenInstance|null Token instance if found, otherwise null.
+     * @throws ModelClassUnknownException If the specified model class does not exist or is not a valid model class.
+     * @throws TraitMissingException If the trait is not used in model class.
      */
     public function find(string $token, string $type = null, string $modelClass = null, Model $model = null, array $data = null): ?TokenInstance
     {
@@ -217,19 +221,24 @@ class StatelessTokenDriver implements TokenDriverInterface
      * @param TokenInstance $tokenInstance The token instance to check
      *
      * @return bool Returns true if the given token instance is blacklisted, false otherwise
+     * @throws ModelClassUnknownException If the specified model class does not exist or is not a valid model class.
+     * @throws TraitMissingException If the trait is not used in model class.
      */
     protected function isTokenBlacklisted(TokenInstance $tokenInstance): bool
     {
+        // Retrieves the Eloquent model from the TokenInstance
+        $model = $tokenInstance->getModel();
+
         $query = $this->blacklistQuery()
             ->where('blacklisted_at', '>=', $tokenInstance->getCreatedAt()) // Apply blacklist only to tokens created before the blacklist date
-            ->where(function ($query) use ($tokenInstance) {
+            ->where(function ($query) use ($model, $tokenInstance) {
                 // Match with the given model class, if present in the blacklist
-                $query->where('model_class', get_class($tokenInstance->getModel()))->orWhereNull('model_class');
+                $query->where('model_class', get_class($model))->orWhereNull('model_class');
             })
-            ->where(function ($query) use ($tokenInstance) {
+            ->where(function ($query) use ($model, $tokenInstance) {
                 // Match with the given model class and model ID, if present in the blacklist
-                $query->where(function ($query) use ($tokenInstance) {
-                    $query->where('model_class', get_class($tokenInstance->getModel()))->where('model_id', $tokenInstance->getModel()->getKey());
+                $query->where(function ($query) use ($model, $tokenInstance) {
+                    $query->where('model_class', get_class($model))->where('model_id', $model->getKey());
                 })->orWhereNull('model_id');
             })
             ->where(function ($query) use ($tokenInstance) {

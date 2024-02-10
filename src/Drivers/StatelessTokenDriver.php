@@ -226,19 +226,16 @@ class StatelessTokenDriver implements TokenDriverInterface
      */
     protected function isTokenBlacklisted(TokenInstance $tokenInstance): bool
     {
-        // Retrieves the Eloquent model from the TokenInstance
-        $model = $tokenInstance->getModel();
-
         $query = $this->blacklistQuery()
             ->where('blacklisted_at', '>=', $tokenInstance->getCreatedAt()) // Apply blacklist only to tokens created before the blacklist date
-            ->where(function ($query) use ($model, $tokenInstance) {
+            ->where(function ($query) use ($tokenInstance) {
                 // Match with the given model class, if present in the blacklist
-                $query->where('model_class', get_class($model))->orWhereNull('model_class');
+                $query->where('model_class', $tokenInstance->getModelClass())->orWhereNull('model_class');
             })
-            ->where(function ($query) use ($model, $tokenInstance) {
+            ->where(function ($query) use ($tokenInstance) {
                 // Match with the given model class and model ID, if present in the blacklist
-                $query->where(function ($query) use ($model, $tokenInstance) {
-                    $query->where('model_class', get_class($model))->where('model_id', $model->getKey());
+                $query->where(function ($query) use ($tokenInstance) {
+                    $query->where('model_class', $tokenInstance->getModelClass())->where('model_id', $tokenInstance->getModelId());
                 })->orWhereNull('model_id');
             })
             ->where(function ($query) use ($tokenInstance) {

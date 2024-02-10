@@ -166,6 +166,26 @@ class TokenInstance
     }
 
     /**
+     * Get the class name of the associated model.
+     *
+     * @return string The class name of the associated model.
+     */
+    public function getModelClass(): string
+    {
+        return $this->modelClass;
+    }
+
+    /**
+     * Get the ID of the associated model instance.
+     *
+     * @return int The ID of the associated model instance.
+     */
+    public function getModelId(): int
+    {
+        return $this->modelId;
+    }
+
+    /**
      * Get the type of the TokenInstance
      *
      * @return string The type of the TokenInstance

@@ -314,6 +314,8 @@ The TokenInstance class is a crucial part of this token management system. It ho
 - `getDriver()` Returns the name of the driver that was used to create the token instance.
 - `getId()` Returns the token's unique identifier.
 - `getModel()` Fetches the associated Eloquent model for the token.
+- `getModelClass()` Returns the class name of the associated model.
+- `getModelId()` Returns the ID of the associated model.
 - `getType()` Returns the token's type (e.g., "ACCESS_TOKEN").
 - `getCreatedAt()` Returns the creation timestamp as a Carbon instance.
 - `getExpiresAt()` Returns the expiration date and time of the token, if it is set to expire.

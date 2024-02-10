@@ -3,7 +3,7 @@
 namespace Bkremenovic\EloquentTokens\Interfaces;
 
 use Bkremenovic\EloquentTokens\TokenInstance;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 interface TokenDriverInterface

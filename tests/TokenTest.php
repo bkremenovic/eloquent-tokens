@@ -42,7 +42,7 @@ class TokenTest extends TestCase
     {
         $token = Token::create($this->testCompany, "INVITE_TOKEN");
         $found = Token::find($token->getToken());
-        $this->assertEquals($token, $found);
+        $this->assertSame($token->getId(), $found->getId());
     }
 
     public function test_find_nonexistent_token()
@@ -55,7 +55,7 @@ class TokenTest extends TestCase
     {
         $token = Token::create($this->testCompany, "INVITE_TOKEN");
         $found = Token::findOrFail($token->getToken());
-        $this->assertEquals($token, $found);
+        $this->assertSame($token->getId(), $found->getId());
     }
 
     public function test_find_or_fail_nonexistent_token()
@@ -70,6 +70,18 @@ class TokenTest extends TestCase
         $token2 = Token::create($this->testCompany, "INVITE_TOKEN", null, [], 'database');
 
         $found = Token::find($token2->getToken());
-        $this->assertEquals($token2, $found);
+        $this->assertSame($token2->getId(), $found->getId());
+    }
+
+    public function test_find_multiple_times_while_caching_instance()
+    {
+        $token = Token::create($this->testCompany, "INVITE_TOKEN");
+        $found = Token::findOrFail($token->getToken());
+        $this->assertSame($token->getId(), $found->getId());
+
+        $modelInstance1 = $found->getModel();
+        $modelInstance2 = $found->getModel();
+
+        $this->assertSame($modelInstance1, $modelInstance2);
     }
 }

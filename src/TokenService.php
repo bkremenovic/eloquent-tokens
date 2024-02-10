@@ -9,7 +9,7 @@ use Bkremenovic\EloquentTokens\Exceptions\TraitMissingException;
 use Bkremenovic\EloquentTokens\Exceptions\UnsupportedDriverException;
 use Bkremenovic\EloquentTokens\Exceptions\UnsupportedTokenTypeException;
 use Bkremenovic\EloquentTokens\Traits\HasEloquentTokens;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Error;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;

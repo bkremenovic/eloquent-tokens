@@ -7,7 +7,7 @@ use Bkremenovic\EloquentTokens\Exceptions\TraitMissingException;
 use Bkremenovic\EloquentTokens\Interfaces\TokenDriverInterface;
 use Bkremenovic\EloquentTokens\TokenConfigManager;
 use Bkremenovic\EloquentTokens\TokenInstance;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;

@@ -5,7 +5,7 @@ namespace Bkremenovic\EloquentTokens;
 use Bkremenovic\EloquentTokens\Exceptions\ModelClassUnknownException;
 use Bkremenovic\EloquentTokens\Exceptions\TraitMissingException;
 use Bkremenovic\EloquentTokens\Traits\HasEloquentTokens;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class TokenInstance
@@ -23,6 +23,13 @@ class TokenInstance
      * @var string
      */
     protected string $id;
+
+    /**
+     * The associated model instance.
+     *
+     * @var Model
+     */
+    protected Model $model;
 
     /**
      * The class name of the associated model.
@@ -133,6 +140,12 @@ class TokenInstance
      */
     public function getModel(): Model
     {
+        // Return the existing model instance, if present
+        if (isset($this->model)) {
+            return $this->model;
+        }
+
+        // Get model class and ID
         $modelClass = $this->modelClass;
         $modelId = $this->modelId;
 
@@ -143,14 +156,13 @@ class TokenInstance
         Helpers::validateTraitUse($modelClass);
 
         // Find the model instance by its class and ID
-        /** @var Model|HasEloquentTokens $model */
-        $model = $modelClass::findOrFail($modelId);
+        $this->model = $modelClass::findOrFail($modelId);
 
         // Mark the model as bound from a token
-        $model->bindFromToken();
+        $this->model->bindFromToken();
 
         // Return the model
-        return $model;
+        return $this->model;
     }
 
     /**

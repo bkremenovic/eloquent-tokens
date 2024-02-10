@@ -5,7 +5,7 @@ namespace Bkremenovic\EloquentTokens\Facades;
 use Bkremenovic\EloquentTokens\TokenInstance;
 use Bkremenovic\EloquentTokens\TokenQueryBuilder;
 use Bkremenovic\EloquentTokens\TokenService;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Facade;
 

@@ -26,7 +26,7 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertInstanceOf(TokenInstance::class, $token);
 
         $found = Token::find($token->getToken());
-        $this->assertEquals($token, $found);
+        $this->assertSame($token->getId(), $found->getId());
 
         $notFound = Token::find('nonexistentToken');
         $this->assertNull($notFound);
@@ -39,7 +39,7 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertInstanceOf(TokenInstance::class, $token);
 
         $found = Token::whereType("INVITE_TOKEN")->find($token->getToken());
-        $this->assertEquals($token, $found);
+        $this->assertSame($token->getId(), $found->getId());
 
         $notFound = Token::whereType("INVALID_TYPE")->find($token->getToken());
         $this->assertNull($notFound);
@@ -52,7 +52,7 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertInstanceOf(TokenInstance::class, $token);
 
         $found = Token::whereModelClass(Company::class)->find($token->getToken());
-        $this->assertEquals($token, $found);
+        $this->assertSame($token->getId(), $found->getId());
 
         $notFound = Token::whereModelClass(Project::class)->find($token->getToken());
         $this->assertNull($notFound);
@@ -65,7 +65,7 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertInstanceOf(TokenInstance::class, $token);
 
         $found = Token::whereModel($this->testCompany)->find($token->getToken());
-        $this->assertEquals($token, $found);
+        $this->assertSame($token->getId(), $found->getId());
 
         $notFound = Token::whereModel($this->testProject1)->find($token->getToken());
         $this->assertNull($notFound);
@@ -80,7 +80,7 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertInstanceOf(TokenInstance::class, $token);
 
         $found = Token::whereData($tokenData)->find($token->getToken());
-        $this->assertEquals($token, $found);
+        $this->assertSame($token->getId(), $found->getId());
 
         $invalidTokenData = ['role' => 'user'];
 
@@ -97,7 +97,7 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertInstanceOf(TokenInstance::class, $token);
 
         $found = Token::whereModel($this->testCompany)->whereType("INVITE_TOKEN")->whereData($tokenData)->find($token->getToken());
-        $this->assertEquals($token, $found);
+        $this->assertSame($token->getId(), $found->getId());
     }
 
     public function test_find_expired_token()
@@ -107,7 +107,7 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertInstanceOf(TokenInstance::class, $token);
 
         $found = Token::find($token->getToken());
-        $this->assertEquals($token, $found);
+        $this->assertSame($token->getId(), $found->getId());
 
         $this->travel(1)->hour();
 
@@ -122,14 +122,14 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertInstanceOf(TokenInstance::class, $token1);
 
         $found = Token::find($token1->getToken());
-        $this->assertEquals($token1, $found);
+        $this->assertSame($token1->getId(), $found->getId());
 
         $token2 = Token::create($this->testCompany, "ACCESS_TOKEN");
         $this->assertNotNull($token2);
         $this->assertInstanceOf(TokenInstance::class, $token2);
 
         $found = Token::find($token2->getToken());
-        $this->assertEquals($token2, $found);
+        $this->assertSame($token2->getId(), $found->getId());
 
         $this->assertDatabaseCount($this->tokenBlacklistTable, 0);
         Token::forceDeleteAll();
@@ -149,14 +149,14 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertInstanceOf(TokenInstance::class, $token1);
 
         $found = Token::find($token1->getToken());
-        $this->assertEquals($token1, $found);
+        $this->assertSame($token1->getId(), $found->getId());
 
         $token2 = Token::create($this->testProject2, "ACCESS_TOKEN");
         $this->assertNotNull($token2);
         $this->assertInstanceOf(TokenInstance::class, $token2);
 
         $found = Token::find($token2->getToken());
-        $this->assertEquals($token2, $found);
+        $this->assertSame($token2->getId(), $found->getId());
 
         $this->assertDatabaseCount($this->tokenBlacklistTable, 0);
         Token::deleteBy($this->testProject1);
@@ -166,7 +166,7 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertNull($notFound);
 
         $found = Token::find($token2->getToken());
-        $this->assertEquals($token2, $found);
+        $this->assertSame($token2->getId(), $found->getId());
     }
 
     public function test_delete_token_by_model_class()
@@ -176,14 +176,14 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertInstanceOf(TokenInstance::class, $token1);
 
         $found = Token::find($token1->getToken());
-        $this->assertEquals($token1, $found);
+        $this->assertSame($token1->getId(), $found->getId());
 
         $token2 = Token::create($this->testProject1, "ACCESS_TOKEN");
         $this->assertNotNull($token2);
         $this->assertInstanceOf(TokenInstance::class, $token2);
 
         $found = Token::find($token2->getToken());
-        $this->assertEquals($token2, $found);
+        $this->assertSame($token2->getId(), $found->getId());
 
         $this->assertDatabaseCount($this->tokenBlacklistTable, 0);
         Token::deleteBy(null, Company::class);
@@ -193,7 +193,7 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertNull($notFound);
 
         $found = Token::find($token2->getToken());
-        $this->assertEquals($token2, $found);
+        $this->assertSame($token2->getId(), $found->getId());
     }
 
     public function test_delete_token_by_type()
@@ -203,14 +203,14 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertInstanceOf(TokenInstance::class, $token1);
 
         $found = Token::find($token1->getToken());
-        $this->assertEquals($token1, $found);
+        $this->assertSame($token1->getId(), $found->getId());
 
         $token2 = Token::create($this->testCompany, "INVITE_TOKEN");
         $this->assertNotNull($token2);
         $this->assertInstanceOf(TokenInstance::class, $token2);
 
         $found = Token::find($token2->getToken());
-        $this->assertEquals($token2, $found);
+        $this->assertSame($token2->getId(), $found->getId());
 
         $this->assertDatabaseCount($this->tokenBlacklistTable, 0);
         Token::deleteBy(null, null, "ACCESS_TOKEN");
@@ -220,7 +220,7 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertNull($notFound);
 
         $found = Token::find($token2->getToken());
-        $this->assertEquals($token2, $found);
+        $this->assertSame($token2->getId(), $found->getId());
     }
 
     public function test_delete_token_by_id()
@@ -230,14 +230,14 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertInstanceOf(TokenInstance::class, $token1);
 
         $found = Token::find($token1->getToken());
-        $this->assertEquals($token1, $found);
+        $this->assertSame($token1->getId(), $found->getId());
 
         $token2 = Token::create($this->testCompany, "ACCESS_TOKEN");
         $this->assertNotNull($token2);
         $this->assertInstanceOf(TokenInstance::class, $token2);
 
         $found = Token::find($token2->getToken());
-        $this->assertEquals($token2, $found);
+        $this->assertSame($token2->getId(), $found->getId());
 
         $this->assertDatabaseCount($this->tokenBlacklistTable, 0);
         Token::deleteBy(null, null, null, $token1->getId());
@@ -247,7 +247,7 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertNull($notFound);
 
         $found = Token::find($token2->getToken());
-        $this->assertEquals($token2, $found);
+        $this->assertSame($token2->getId(), $found->getId());
     }
 
     public function test_delete_token_by_data()
@@ -257,14 +257,14 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertInstanceOf(TokenInstance::class, $token1);
 
         $found = Token::find($token1->getToken());
-        $this->assertEquals($token1, $found);
+        $this->assertSame($token1->getId(), $found->getId());
 
         $token2 = Token::create($this->testCompany, "ACCESS_TOKEN", null, ['role' => 'user']);
         $this->assertNotNull($token2);
         $this->assertInstanceOf(TokenInstance::class, $token2);
 
         $found = Token::find($token2->getToken());
-        $this->assertEquals($token2, $found);
+        $this->assertSame($token2->getId(), $found->getId());
 
         $this->assertDatabaseCount($this->tokenBlacklistTable, 0);
         Token::deleteBy($this->testCompany, null, null, null, ['role' => 'admin']);
@@ -274,6 +274,6 @@ class StatelessTokenDriverTest extends TestCase
         $this->assertNull($notFound);
 
         $found = Token::find($token2->getToken());
-        $this->assertEquals($token2, $found);
+        $this->assertSame($token2->getId(), $found->getId());
     }
 }

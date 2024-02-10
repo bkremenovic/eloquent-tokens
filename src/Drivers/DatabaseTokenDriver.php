@@ -77,6 +77,7 @@ class DatabaseTokenDriver implements TokenDriverInterface
 
         // Create a new TokenInstance object and return it
         return new TokenInstance(
+            static::class,
             $tokenId,
             $tokenModelClass,
             $tokenModelId,
@@ -128,6 +129,7 @@ class DatabaseTokenDriver implements TokenDriverInterface
 
         // Create a new TokenInstance object and return it
         return new TokenInstance(
+            static::class,
             $tokenId,
             $modelClass,
             $modelId,

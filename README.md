@@ -311,6 +311,7 @@ $isTokenFound = (bool) Token::whereModel($project)
 The TokenInstance class is a crucial part of this token management system. It holds all relevant information for a specific token, such as its identifier, associated model, type, creation time, expiration time and additional data. 
 
 ### Available Methods
+- `getDriver()` Returns the name of the driver that was used to create the token instance.
 - `getId()` Returns the token's unique identifier.
 - `getModel()` Fetches the associated Eloquent model for the token.
 - `getType()` Returns the token's type (e.g., "ACCESS_TOKEN").

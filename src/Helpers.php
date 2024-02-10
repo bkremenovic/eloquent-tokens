@@ -95,4 +95,29 @@ class Helpers
 
         return $driver;
     }
+
+    /**
+     * Retrieves the name of a token driver based on its class name.
+     *
+     * @param string $driverClassName The fully qualified class name of the token driver to search for.
+     * @return string|null The name of the token driver if found, otherwise null.
+     */
+    public static function getDriverName(string $driverClassName): ?string
+    {
+        /** @var TokenConfigManager $config */
+        $config = app(TokenConfigManager::class);
+
+        // Iterate over the drivers retrieved from the config manager
+        foreach($config->getDrivers() as $name => $driver) {
+
+            // Check if the current driver instance matches the passed driver class name
+            if($driver instanceof $driverClassName) {
+                // Return the name of the driver if there's a match
+                return $name;
+            }
+        }
+
+        // If no match is found, return null
+        return null;
+    }
 }

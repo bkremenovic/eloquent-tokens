@@ -11,6 +11,13 @@ use Illuminate\Database\Eloquent\Model;
 class TokenInstance
 {
     /**
+     * The name of the token driver that created this token instance.
+     *
+     * @var string
+     */
+    protected string $driver;
+
+    /**
      * The unique identifier for the token instance.
      *
      * @var string
@@ -71,6 +78,7 @@ class TokenInstance
      *
      * Initializes a new instance of the TokenInstance with specified details.
      *
+     * @param string $driverClassName The class name of the driver.
      * @param string $id Unique identifier for the token.
      * @param string $modelClass The class of the associated model.
      * @param int $modelId The ID of the model instance.
@@ -80,8 +88,9 @@ class TokenInstance
      * @param array $data Additional data associated with the token.
      * @param string $token The actual token string.
      */
-    public function __construct(string $id, string $modelClass, int $modelId, string $type, Carbon $createdAt, ?Carbon $expiresAt, array $data, string $token)
+    public function __construct(string $driverClassName, string $id, string $modelClass, int $modelId, string $type, Carbon $createdAt, ?Carbon $expiresAt, array $data, string $token)
     {
+        $this->driver = Helpers::getDriverName($driverClassName);
         $this->id = $id;
         $this->modelClass = $modelClass;
         $this->modelId = $modelId;
@@ -90,6 +99,16 @@ class TokenInstance
         $this->expiresAt = $expiresAt;
         $this->data = $data;
         $this->token = $token;
+    }
+
+    /**
+     * Get the driver name for this token instance.
+     *
+     * @return string The name of the driver.
+     */
+    public function getDriver(): string
+    {
+        return $this->driver;
     }
 
     /**

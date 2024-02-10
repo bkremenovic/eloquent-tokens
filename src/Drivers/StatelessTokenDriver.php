@@ -71,6 +71,7 @@ class StatelessTokenDriver implements TokenDriverInterface
 
         // Create a new TokenInstance
         $tokenInstance = new TokenInstance(
+            static::class,
             $tokenUuid,
             $tokenModelClass,
             $tokenModelId,
@@ -133,6 +134,7 @@ class StatelessTokenDriver implements TokenDriverInterface
 
         // Create a new TokenInstance object and return it
         return new TokenInstance(
+            static::class,
             $uuid,
             $tokenModelClass,
             $tokenModelId,

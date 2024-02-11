@@ -7,7 +7,7 @@ use Bkremenovic\EloquentTokens\Exceptions\TraitMissingException;
 use Bkremenovic\EloquentTokens\Interfaces\TokenDriverInterface;
 use Bkremenovic\EloquentTokens\TokenConfigManager;
 use Bkremenovic\EloquentTokens\TokenInstance;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
@@ -49,7 +49,7 @@ class StatelessTokenDriver implements TokenDriverInterface
         $tokenData = $plainData[6] ?: [];
 
         // Check if the token has expired
-        if ($tokenExpiresAt && now()->startOfSecond()->isAfter($tokenExpiresAt)) {
+        if ($tokenExpiresAt && Carbon::now()->startOfSecond()->isAfter($tokenExpiresAt)) {
             return null;
         }
 
@@ -112,7 +112,7 @@ class StatelessTokenDriver implements TokenDriverInterface
         $tokenModelId = $model->getKey();
 
         // Set creation timestamp and calculate expiration timestamp
-        $createdAt = now()->startOfSecond();
+        $createdAt = Carbon::now()->startOfSecond();
 
         // Convert string expiration time to Carbon
         if($expires && is_string($expires)) {

@@ -5,7 +5,7 @@ namespace Bkremenovic\EloquentTokens;
 use Bkremenovic\EloquentTokens\Exceptions\ModelClassUnknownException;
 use Bkremenovic\EloquentTokens\Exceptions\TraitMissingException;
 use Bkremenovic\EloquentTokens\Traits\HasEloquentTokens;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class TokenInstance

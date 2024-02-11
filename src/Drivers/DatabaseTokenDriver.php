@@ -5,7 +5,7 @@ namespace Bkremenovic\EloquentTokens\Drivers;
 use Bkremenovic\EloquentTokens\Interfaces\TokenDriverInterface;
 use Bkremenovic\EloquentTokens\TokenConfigManager;
 use Bkremenovic\EloquentTokens\TokenInstance;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
@@ -35,7 +35,7 @@ class DatabaseTokenDriver implements TokenDriverInterface
         $tokenResult = $this->tokensQuery()
             ->where('token', $token)
             ->where(function($query) {
-                $query->whereNull('expires_at')->orWhere('expires_at', '>', now());
+                $query->whereNull('expires_at')->orWhere('expires_at', '>', Carbon::now());
             })
             ->whereNull('deleted_at')
             ->when($model, function ($query) use ($model) {
@@ -109,7 +109,7 @@ class DatabaseTokenDriver implements TokenDriverInterface
         $modelId = $model->getKey();
 
         // Set creation timestamp and calculate expiration timestamp
-        $createdAt = now()->startOfSecond();
+        $createdAt = Carbon::now()->startOfSecond();
 
         // Convert string expiration time to Carbon
         if($expires && is_string($expires)) {
@@ -155,7 +155,7 @@ class DatabaseTokenDriver implements TokenDriverInterface
     public function deleteBy(Model $model = null, string $modelClass = null, string $type = null, string $id = null, array $data = null): void
     {
         // Get current time
-        $currentTime = now()->startOfSecond();
+        $currentTime = Carbon::now()->startOfSecond();
 
         $this->tokensQuery()
             ->where(function($query) use ($currentTime) {
@@ -192,7 +192,7 @@ class DatabaseTokenDriver implements TokenDriverInterface
         $this->tokensQuery()
             ->whereNull('deleted_at')
             ->update([
-                'deleted_at' => now()->startOfSecond()
+                'deleted_at' => Carbon::now()->startOfSecond()
             ]);
     }
 

@@ -19,7 +19,7 @@
     ],
     "require": {
         "php": "^8.0",
-        "laravel/framework": "^7.0|^8.0|^9.0|^10.0",
+        "laravel/framework": "^7.0|^8.0|^9.0|^10.0|^11.0",
         "nesbot/carbon": "^2.67",
         "ext-json": "*",
         "ext-zlib": "*"

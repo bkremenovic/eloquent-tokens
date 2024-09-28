@@ -10,7 +10,6 @@ use DateTime;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class DatabaseTokenDriver implements TokenDriverInterface
 {
@@ -33,7 +32,7 @@ class DatabaseTokenDriver implements TokenDriverInterface
          * @var object{id: mixed, model_class: class-string, model_id: int|string, type: string, created_at: DateTime, expires_at: ?DateTime, data: string} $tokenResult
          */
         $tokenResult = $this->tokensQuery()
-            ->where('token', $token)
+            ->where('token', $this->hashToken($token)) // Hash the token before querying
             ->where(function($query) {
                 $query->whereNull('expires_at')->orWhere('expires_at', '>', Carbon::now());
             })
@@ -98,11 +97,13 @@ class DatabaseTokenDriver implements TokenDriverInterface
      * @param array $data Additional data to include with the token.
      *
      * @return TokenInstance The newly created token instance.
+     *
+     * @noinspection PhpDocMissingThrowsInspection
      */
     public function create(Model $model, string $type, Carbon|string $expires = null, array $data = []): TokenInstance
     {
         // Generates a random string with 128 characters to use as token
-        $token = Str::random(128);
+        $token = bin2hex(random_bytes(64));
 
         // Get class and id from the $model argument
         $modelClass = get_class($model);
@@ -118,7 +119,7 @@ class DatabaseTokenDriver implements TokenDriverInterface
 
         // Inserts a new token into the tokens table in the database
         $tokenId = $this->tokensQuery()->insertGetId([
-            'token' => $token,
+            'token' => $this->hashToken($token), // Store the token in a hashed format
             'model_class' => $modelClass,
             'model_id' => $modelId,
             'type' => $type,
@@ -194,6 +195,19 @@ class DatabaseTokenDriver implements TokenDriverInterface
             ->update([
                 'deleted_at' => Carbon::now()->startOfSecond()
             ]);
+    }
+
+    /**
+     * Hashes the given token using the sha512 algorithm.
+     *
+     * @param string $token The token to be hashed.
+     *
+     * @return string The hashed token.
+     */
+    protected function hashToken(string $token): string
+    {
+        // Return the hashed token using SHA-512 algorithm
+        return hash('sha512', $token);
     }
 
     /**

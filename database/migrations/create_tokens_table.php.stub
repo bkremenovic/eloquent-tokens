@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('token');
+            $table->char('token', 128);
             $table->string('model_class');
             $table->string('model_id', 36); // Limit to 36 characters, suitable for both IDs and UUIDs
             $table->string('type');

@@ -30,7 +30,7 @@ class DatabaseTokenDriver implements TokenDriverInterface
         /**
          * Query the 'tokens' table in the database to find the matching token
          *
-         * @var object{id: mixed, model_class: class-string, model_id: int, type: string, created_at: DateTime, expires_at: ?DateTime, data: string} $tokenResult
+         * @var object{id: mixed, model_class: class-string, model_id: int|string, type: string, created_at: DateTime, expires_at: ?DateTime, data: string} $tokenResult
          */
         $tokenResult = $this->tokensQuery()
             ->where('token', $token)

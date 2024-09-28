@@ -5,6 +5,7 @@ namespace Bkremenovic\EloquentTokens\Traits;
 use Bkremenovic\EloquentTokens\Exceptions\InvalidTraitUsageException;
 use Bkremenovic\EloquentTokens\Facades\Token;
 use Bkremenovic\EloquentTokens\TokenInstance;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 trait HasEloquentTokens
@@ -18,7 +19,7 @@ trait HasEloquentTokens
      * Create a new TokenInstance
      *
      * @param string $type The type of the TokenInstance
-     * @param string|null $expiresIn Optional. The expiration time for the TokenInstance, as a string compatible with strtotime()
+     * @param Carbon|string|null $expires Optional. The expiration time for the TokenInstance, as a string compatible with strtotime()
      * @param array $data Optional. Additional data to associate with the TokenInstance
      * @param string|null $driver Driver name
      *
@@ -26,7 +27,7 @@ trait HasEloquentTokens
      *
      * @noinspection PhpDocMissingThrowsInspection
      */
-    public function createToken(string $type, string $expiresIn = null, array $data = [], string $driver = null): TokenInstance
+    public function createToken(string $type, Carbon|string $expires = null, array $data = [], string $driver = null): TokenInstance
     {
         // Check if the trait is applied to Model class
         if (!$this instanceof Model) {
@@ -34,7 +35,7 @@ trait HasEloquentTokens
         }
 
         // Create a TokenInstance and return it
-        return Token::create($this, $type, $expiresIn, $data, $driver);
+        return Token::create($this, $type, $expires, $data, $driver);
     }
 
     /**

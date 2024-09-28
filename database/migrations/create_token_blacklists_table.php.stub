@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->uuid()->nullable()->index();
             $table->string('model_class')->nullable();
-            $table->unsignedBigInteger('model_id')->nullable();
+            $table->string('model_id', 36)->nullable(); // Limit to 36 characters, suitable for both IDs and UUIDs
             $table->string('type')->nullable();
-            $table->json('data')->nullable()->index();
+            $table->json('data')->nullable();
             $table->dateTime('blacklisted_at')->useCurrent()->index();
 
             $table->index(['model_class', 'model_id', 'type'], 'token_blacklists_filter_index');

@@ -39,11 +39,11 @@ class TokenInstance
     protected string $modelClass;
 
     /**
-     * The ID of the associated model instance.
+     * The ID/UUID of the associated model instance.
      *
-     * @var int
+     * @var int|string
      */
-    protected int $modelId;
+    protected int|string $modelId;
 
     /**
      * The type of the token.
@@ -88,14 +88,14 @@ class TokenInstance
      * @param string $driverClassName The class name of the driver.
      * @param string $id Unique identifier for the token.
      * @param string $modelClass The class of the associated model.
-     * @param int $modelId The ID of the model instance.
+     * @param int|string $modelId The ID of the model instance.
      * @param string $type The type of token.
      * @param Carbon $createdAt The creation date and time of the token.
      * @param Carbon|null $expiresAt The expiration date and time of the token, if any.
      * @param array $data Additional data associated with the token.
      * @param string $token The actual token string.
      */
-    public function __construct(string $driverClassName, string $id, string $modelClass, int $modelId, string $type, Carbon $createdAt, ?Carbon $expiresAt, array $data, string $token)
+    public function __construct(string $driverClassName, string $id, string $modelClass, int|string $modelId, string $type, Carbon $createdAt, ?Carbon $expiresAt, array $data, string $token)
     {
         $this->driver = Helpers::getDriverName($driverClassName);
         $this->id = $id;
@@ -176,11 +176,11 @@ class TokenInstance
     }
 
     /**
-     * Get the ID of the associated model instance.
+     * Get the ID/UUID of the associated model instance.
      *
-     * @return int The ID of the associated model instance.
+     * @return int|string The ID/UUID of the associated model instance.
      */
-    public function getModelId(): int
+    public function getModelId(): int|string
     {
         return $this->modelId;
     }
